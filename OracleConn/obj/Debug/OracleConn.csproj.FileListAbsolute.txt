@@ -1,0 +1,13 @@
+C:\Users\admin\Desktop\OracleConn\OracleConn\bin\Debug\OracleConn.exe.config
+C:\Users\admin\Desktop\OracleConn\OracleConn\bin\Debug\OracleConn.exe
+C:\Users\admin\Desktop\OracleConn\OracleConn\bin\Debug\OracleConn.pdb
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn.csprojResolveAssemblyReference.cache
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\MainWindow.baml
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\MainWindow.g.cs
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\App.g.cs
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn_MarkupCompile.cache
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn.g.resources
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn.Properties.Resources.resources
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn.csproj.GenerateResource.Cache
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn.exe
+C:\Users\admin\Desktop\OracleConn\OracleConn\obj\Debug\OracleConn.pdb
