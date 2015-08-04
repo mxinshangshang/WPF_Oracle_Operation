@@ -1,17 +1,19 @@
 ﻿<Window x:Class="OracleConn.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="OracleConn" Height="450" Width="700">
+        Title="Oracle_Operation" Height="450" Width="700">
     <Grid Margin="0,0,3.4,-17.6">
-        <DataGrid x:Name="dataGrid" ItemsSource="{Binding}" Margin="38,83,32.2,41.2"/>
-        <TextBox x:Name="ServerName" HorizontalAlignment="Left" Height="24" Margin="38,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"/>
-        <TextBox x:Name="TableName"   HorizontalAlignment="Left" Height="24" Margin="166,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"/>
-        <TextBox x:Name="UserName"  HorizontalAlignment="Left" Height="24" Margin="296,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"/>
-        <TextBox x:Name="Passwd"  HorizontalAlignment="Left" Height="24" Margin="425,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"/>
-        <Button Content="Open" HorizontalAlignment="Left" Height="24" Margin="551,40,0,0" VerticalAlignment="Top" Width="107" Click="Button_Click"/>
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding}" Margin="38,83,32.2,41.2"   SelectionUnit="Cell"/>
+        <TextBox x:Name="ServerName" HorizontalAlignment="Left" Height="24" Margin="38,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="192.168.1.30"/>
+        <TextBox x:Name="TableName"   HorizontalAlignment="Left" Height="24" Margin="166,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="unitedmne"/>
+        <TextBox x:Name="UserName"  HorizontalAlignment="Left" Height="24" Margin="296,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="unitedmne"/>
+        <TextBox x:Name="Passwd"  HorizontalAlignment="Left" Height="24" Margin="425,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="unitedmne"/>
+        <Button Content="OpenDB" HorizontalAlignment="Left" Height="24" Margin="551,40,0,0" VerticalAlignment="Top" Width="107" Click="Button_Click"/>
+        
         <Label Content="Server:" HorizontalAlignment="Left" Margin="38,13,0,0" VerticalAlignment="Top"/>
         <Label Content="Table:" HorizontalAlignment="Left" Margin="166,14,0,0" VerticalAlignment="Top"/>
         <Label Content="User:" HorizontalAlignment="Left" Margin="296,14,0,0" VerticalAlignment="Top"/>
         <Label Content="Passwd:" HorizontalAlignment="Left" Margin="425,14,0,0" VerticalAlignment="Top"/>
+        <Button Content="Button" HorizontalAlignment="Left" Height="25" Margin="551,10,0,0" VerticalAlignment="Top" Width="107" Click="Button_Click_1"/>
     </Grid>
 </Window>
