@@ -67,19 +67,36 @@ namespace OracleConn
             }
         }
 
-        private void DataGrid_TextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
+            string row = null;
+            string column = null;
+            string content = null;
+            DataGrid dg = sender as DataGrid;
+            var cell = dg.CurrentCell;
+            DataRowView item = cell.Item as DataRowView;
+            DataGridTextColumn dgcol = dataGrid.Columns[cell.Column.DisplayIndex] as DataGridTextColumn;
+            Binding binding = dgcol.Binding as Binding;
+            row = binding.Path.Path;                                                                    //获取列名
+
+            if (dataGrid.SelectedCells.Count > 0)
+            {
+                DataGridCell cel = DataGridHelper.GetCell(dataGrid.SelectedCells[0]);
+                column = (DataGridHelper.GetRowIndex(cel) + 1).ToString();                                //获取行号
+                content = (e.EditingElement as TextBox).Text;
+            }
+            this.Title= row + "," + column +"  Changed" + "  value: "+content;
+            
             string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=orcl)));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
             OracleConnection conn = new OracleConnection(constring);
             try
             {
-                int index = dataGrid.SelectedIndex;
-                /*
-                string del = "delete from User_Table where [User_id] = '" + dataGrid.Rows[index].Cells[0].Value.ToString() + "'";
                 conn.Open();
-                string sql = "select * from " + TableName.Text;
+                DataSet ds = new DataSet();
+                string sql = "update " + TableName.Text + " set " + row + "= " + content + " where pn=" + column;
                 OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
-                 */
+                oda.Fill(ds);
+                conn.Close();
             }
             catch (Exception ex)
             {
@@ -88,15 +105,6 @@ namespace OracleConn
             finally
             {
                 conn.Close();
-            }
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (dataGrid.SelectedCells.Count > 0)
-            {
-                DataGridCell cell = DataGridHelper.GetCell(dataGrid.SelectedCells[0]);
-                this.Title = DataGridHelper.GetRowIndex(cell).ToString();
             }
         }
     }
