@@ -75,17 +75,19 @@ namespace OracleConn
             DataGrid dg = sender as DataGrid;
             var cell = dg.CurrentCell;
             DataRowView item = cell.Item as DataRowView;
-            DataGridTextColumn dgcol = dataGrid.Columns[cell.Column.DisplayIndex] as DataGridTextColumn;
+            DataGridTextColumn dgcol = dataGrid.Columns[cell.Column.DisplayIndex] as DataGridTextColumn;//表示一个 DataGrid 列，该列在其单元格中承载文本内容。
             Binding binding = dgcol.Binding as Binding;
-            row = binding.Path.Path;                                                                    //获取列名
+            row = binding.Path.Path;
 
             if (dataGrid.SelectedCells.Count > 0)
             {
                 DataGridCell cel = DataGridHelper.GetCell(dataGrid.SelectedCells[0]);
-                column = (DataGridHelper.GetRowIndex(cel) + 1).ToString();                                //获取行号
+                DataGridRow firstItem = (DataGridRow)dg.ItemContainerGenerator.ContainerFromIndex(0);
+                //column = (DataGridHelper.GetRowIndex(cel) + 1).ToString();//(dg.Columns[DataGridHelper.GetRowIndex(cel) + 1].GetCellContent(dataGrid.Items[0]) as TextBlock).Text.ToString();
+                column = (dataGrid.Columns[0].GetCellContent(dataGrid.Items[DataGridHelper.GetRowIndex(cel)]) as TextBlock).Text.ToString();
                 content = (e.EditingElement as TextBox).Text;
             }
-            this.Title= row + "," + column +"  Changed" + "  value: "+content;
+            this.Title = "（" + row + "," + column + "）  Changed" + "   " + item[row].ToString() + "--->" + content;
             
             string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=orcl)));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
             OracleConnection conn = new OracleConnection(constring);
