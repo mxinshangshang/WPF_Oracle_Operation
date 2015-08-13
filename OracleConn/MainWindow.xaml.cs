@@ -1,23 +1,26 @@
-﻿using System;
+﻿/**************************************************************************************
+*  File name:      MainWindow.xaml.cs
+*  Author:         Mxin Chiang
+*  Version:        1.0
+*  Date:           13.08.2015
+*  Description:    Design a tool to show tables from Database of TRAINRUNINFO 
+*  Others:
+*  Function List:
+***************************************************************************************/
+using System;
 using System.Collections.Generic;
-//using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Data;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Data.SqlClient;
 
 namespace OracleConn
 {
@@ -31,9 +34,10 @@ namespace OracleConn
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)                            //Load DB
         {
-            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=orcl)));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
+            this.TableComboBox.Items.Clear();
+            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=" + dbName.Text + ")));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
             OracleConnection conn = new OracleConnection(constring);
 
             try
@@ -60,7 +64,44 @@ namespace OracleConn
             }
         }
 
-        private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void table_SelectionChanged(object sender, SelectionChangedEventArgs e)          //Choose Table
+        {
+            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=" + dbName.Text + ")));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
+            OracleConnection conn = new OracleConnection(constring);
+            try
+            {
+                conn.Open();
+                DataSet ds = new DataSet();
+                string sql = "select * from " + TableComboBox.SelectedItem.ToString();
+                OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
+                oda.Fill(ds);
+                conn.Close();
+
+                int i = ds.Tables[0].Rows.Count;
+                int j = ds.Tables[0].Columns.Count;
+
+                //for (int k = 0; k < i; k++)
+                //{
+                //    for (int m = 0; m < j; m++)
+                //    {
+                //        if (int.Parse(ds.Tables[0].Rows[k][m].ToString()) < 0)
+                //            ds.Tables[0].Rows[k][m] = "0";
+
+                //    }
+                //}
+                dataGrid.DataContext = ds.Tables[0].DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)    //Change Value
         {
             string row = null;
             string column = null;
@@ -68,7 +109,7 @@ namespace OracleConn
             DataGrid dg = sender as DataGrid;
             var cell = dg.CurrentCell;
             DataRowView item = cell.Item as DataRowView;
-            DataGridTextColumn dgcol = dataGrid.Columns[cell.Column.DisplayIndex] as DataGridTextColumn;//表示一个 DataGrid 列，该列在其单元格中承载文本内容。
+            DataGridTextColumn dgcol = dataGrid.Columns[cell.Column.DisplayIndex] as DataGridTextColumn;
             Binding binding = dgcol.Binding as Binding;
             row = binding.Path.Path;
 
@@ -87,47 +128,10 @@ namespace OracleConn
             {
                 conn.Open();
                 DataSet ds = new DataSet();
-                string sql = "update " + TableComboBox.SelectedItem.ToString() + " set " + row + "= " + content + " where pn=" + column;
+                string sql = "update " + TableComboBox.SelectedItem.ToString() + " set " + row + "= " + content + " where pn=" + column;//待修改 pn
                 OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
                 oda.Fill(ds);
                 conn.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
-
-        private void table_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=" + dbName.Text + ")));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
-            OracleConnection conn = new OracleConnection(constring);
-            try
-            {
-                conn.Open();
-                DataSet ds = new DataSet();
-                string sql = "select * from " + TableComboBox.SelectedItem.ToString();
-                OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
-                oda.Fill(ds);
-                conn.Close();
-
-                int i = ds.Tables[0].Rows.Count;
-                int j = ds.Tables[0].Columns.Count;
-
-                for (int k = 0; k < i; k++)
-                {
-                    for (int m = 0; m < j; m++)
-                    {
-                        if (int.Parse(ds.Tables[0].Rows[k][m].ToString()) < 0)
-                            ds.Tables[0].Rows[k][m] = "0";
-
-                    }
-                }
-                dataGrid.DataContext = ds.Tables[0].DefaultView;
             }
             catch (Exception ex)
             {
@@ -140,7 +144,7 @@ namespace OracleConn
         }
     }
 
-    public static class DataGridHelper
+    public static class DataGridHelper           //Get row
     {
         public static DataGridCell GetCell(DataGridCellInfo dataGridCellInfo)
         {
