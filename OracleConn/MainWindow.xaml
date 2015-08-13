@@ -4,16 +4,17 @@
         Title="Oracle_Operation" Height="400" Width="700">
     <Grid Margin="0,0,3.6,-17.6">
         <DataGrid x:Name="dataGrid" ItemsSource="{Binding}" Margin="38,119,33,41"  SelectionUnit="Cell"  CellEditEnding="dataGrid_CellEditEnding"></DataGrid>
-        <TextBox x:Name="ServerName" HorizontalAlignment="Left" Height="24" Margin="38,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="192.168.1.31"/>
-        <TextBox x:Name="TableName"   HorizontalAlignment="Left" Height="24" Margin="166,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="trainbasicinfo"/>
-        <TextBox x:Name="UserName"  HorizontalAlignment="Left" Height="24" Margin="296,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="hhso"/>
-        <TextBox x:Name="Passwd"  HorizontalAlignment="Left" Height="24" Margin="425,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="hhso"/>
+        <TextBox x:Name="ServerName" HorizontalAlignment="Left" Height="24" Margin="38,39,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="192.168.1.30"/>
+        <TextBox x:Name="dbName"   HorizontalAlignment="Left" Height="24" Margin="166,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="orcl"/>
+        <TextBox x:Name="UserName"  HorizontalAlignment="Left" Height="24" Margin="296,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="unitedmne"/>
+        <TextBox x:Name="Passwd"  HorizontalAlignment="Left" Height="24" Margin="425,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="96" Text="unitedmne"/>
         <Button Content="OpenDB" HorizontalAlignment="Left" Height="24" Margin="551,40,0,0" VerticalAlignment="Top" Width="107" Click="Button_Click"/>
 
         <Label Content="Server:" HorizontalAlignment="Left" Margin="38,13,0,0" VerticalAlignment="Top"/>
-        <Label Content="Table:" HorizontalAlignment="Left" Margin="166,14,0,0" VerticalAlignment="Top"/>
+        <Label Content="SID:" HorizontalAlignment="Left" Margin="166,14,0,0" VerticalAlignment="Top"/>
         <Label Content="User:" HorizontalAlignment="Left" Margin="296,14,0,0" VerticalAlignment="Top"/>
         <Label Content="Passwd:" HorizontalAlignment="Left" Margin="425,14,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="TableComboBox"   HorizontalAlignment="Left" Height="24" Margin="39,80,0,0" VerticalAlignment="Top" Width="157"/>
+        <ComboBox x:Name="TableComboBox" SelectionChanged="table_SelectionChanged"  ItemsSource="{Binding}"  HorizontalAlignment="Left" Height="24" Margin="88,82,0,0" VerticalAlignment="Top" Width="174"/>
+        <Label Content="Table:" HorizontalAlignment="Left" Margin="38,80,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

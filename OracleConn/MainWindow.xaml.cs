@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -33,55 +33,22 @@ namespace OracleConn
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ats)));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
+            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=orcl)));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
             OracleConnection conn = new OracleConnection(constring);
+
             try
             {
-                conn.Open();
-                DataSet ds = new DataSet();
-                DataTable dt = new DataTable();
-
-                dt = conn.GetSchema("Tables");
-
-                //foreach (Table column in dt.)
-                //{
-                //    TableComboBox.Items.Add(column.ToString());
-                //}
-
-                //foreach (DataRow dr in dt.Rows)
-                //{
-                //    ListViewItem li = new ListViewItem();
-                //    li.SubItems.Clear();
-
-                //    li.SubItems[0].Text = dr[0].ToString();
-
-                //    for (int i = 1; i < dt.Columns.Count; i++)
-                //    {
-
-                //        li.SubItems.Add(dr[i].ToString());
-                //    }
-
-                //    listView1.Items.Add(li);
-                //}  
-
-                string sql = "select * from " + TableName.Text;
-                OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
-                oda.Fill(ds);
-                conn.Close();
-
-                int i = ds.Tables[0].Rows.Count;
-                int j = ds.Tables[0].Columns.Count;
-
-                //for (int k = 0; k < i; k++)
-                //{
-                //    for (int m = 0; m < j; m++)
-                //    {
-                //        if (int.Parse(ds.Tables[0].Rows[k][m].ToString()) < 0)
-                //            ds.Tables[0].Rows[k][m] = "0";
-
-                //    }
-                //}
-                dataGrid.DataContext = ds.Tables[0].DefaultView;
+                OracleCommand cmd = new OracleCommand("select table_name from user_tables", conn);
+                if (conn.State == ConnectionState.Closed)
+                {
+                    conn.Open();
+                    IDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        TableComboBox.Items.Add(dr["table_name"].ToString());
+                    }
+                    dr.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -112,15 +79,15 @@ namespace OracleConn
                 column = (dataGrid.Columns[0].GetCellContent(dataGrid.Items[DataGridHelper.GetRowIndex(cel)]) as TextBlock).Text.ToString();
                 content = (e.EditingElement as TextBox).Text;
             }
-            this.Title = "（" + row + "," + column + "）  Changed" + "   " + item[row].ToString() + "--->" + content + "  First:"+ (dataGrid.Columns[0].GetCellContent(dataGrid.Items[0]) as TextBlock).Text.ToString();
+            this.Title = "（" + row + "," + column + "）  Changed" + "   " + item[row].ToString() + "--->" + content;
 
-            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ats)));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
+            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=" + dbName.Text + ")));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
             OracleConnection conn = new OracleConnection(constring);
             try
             {
                 conn.Open();
                 DataSet ds = new DataSet();
-                string sql = "update " + TableName.Text + " set " + row + "= " + content + " where " + (dataGrid.Columns[0].GetCellContent(dataGrid.Items[0]) as TextBlock).Text.ToString()+"=" + column;
+                string sql = "update " + TableComboBox.SelectedItem.ToString() + " set " + row + "= " + content + " where pn=" + column;
                 OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
                 oda.Fill(ds);
                 conn.Close();
@@ -135,38 +102,43 @@ namespace OracleConn
             }
         }
 
-        public List<string> GetTables(string connection)
+        private void table_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            List<string> tablelist = new List<string>();
-            OracleConnection objConnetion = new OracleConnection(connection);
+            string constring = "data source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=" + ServerName.Text + ")(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=" + dbName.Text + ")));user id=" + UserName.Text + ";password=" + Passwd.Text + ";";
+            OracleConnection conn = new OracleConnection(constring);
             try
             {
-                if (objConnetion.State == ConnectionState.Closed)
+                conn.Open();
+                DataSet ds = new DataSet();
+                string sql = "select * from " + TableComboBox.SelectedItem.ToString();
+                OracleDataAdapter oda = new OracleDataAdapter(sql, conn);
+                oda.Fill(ds);
+                conn.Close();
+
+                int i = ds.Tables[0].Rows.Count;
+                int j = ds.Tables[0].Columns.Count;
+
+                for (int k = 0; k < i; k++)
                 {
-                    objConnetion.Open();
-                    DataTable objTable = objConnetion.GetSchema("Tables");
-                    foreach (DataRow row in objTable.Rows)
+                    for (int m = 0; m < j; m++)
                     {
-                        TableComboBox.Items.Add(row[0].ToString());
+                        if (int.Parse(ds.Tables[0].Rows[k][m].ToString()) < 0)
+                            ds.Tables[0].Rows[k][m] = "0";
+
                     }
                 }
+                dataGrid.DataContext = ds.Tables[0].DefaultView;
             }
-            catch
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
             finally
             {
-                if (objConnetion != null && objConnetion.State == ConnectionState.Closed)
-                {
-                    objConnetion.Dispose();
-                }
-
+                conn.Close();
             }
-            return tablelist;
-        } 
+        }
     }
-
 
     public static class DataGridHelper
     {
